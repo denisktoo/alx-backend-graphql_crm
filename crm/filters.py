@@ -33,6 +33,14 @@ class ProductFilter(django_filters.FilterSet):
     stock__lte = django_filters.NumberFilter(field_name="stock", lookup_expr='lte')
     stock_less_than_10 = django_filters.BooleanFilter(method='filter_stock_less_than_10')
 
+    order_by = django_filters.OrderingFilter(
+        fields=(
+            ('price', 'price'),
+            ('stock', 'stock'),
+            ('name', 'name'),
+        )
+    )
+    
     class Meta:
         model = Product
         fields = {
