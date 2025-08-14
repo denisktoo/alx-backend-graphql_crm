@@ -91,9 +91,9 @@ class BulkCreateCustomers(graphene.Mutation):
 class ProductType(DjangoObjectType):
     class Meta:
         model = Product
-        fields = ("id", "name", "price", "stock")
         interfaces = (graphene.relay.Node,)
         filterset_class = ProductFilter
+        fields = ['id', 'name', 'price', 'stock']
 
 class ProductInput(graphene.InputObjectType):
     name = graphene.String(required=True)
@@ -141,9 +141,9 @@ class OrderType(DjangoObjectType):
 
     class Meta:
         model = Order
-        fields = ("id", "customer", "products", "order_date", "total_amount")
         interfaces = (graphene.relay.Node,)
         filterset_class = OrderFilter
+        fields = ['id', 'customer', 'products', 'order_date', 'total_amount']
 
     def resolve_total_amount(self, info):
         # Sum the price of all products in this order
@@ -200,8 +200,8 @@ class CreateOrder(graphene.Mutation):
 
 class Query(graphene.ObjectType):
     all_customers = DjangoFilterConnectionField(CustomerType)
-    all_products = DjangoFilterConnectionField(ProductType, order_by=graphene.List(of_type=graphene.String))
-    all_orders = DjangoFilterConnectionField(OrderType, order_by=graphene.List(of_type=graphene.String))
+    all_products = DjangoFilterConnectionField(ProductType)
+    all_orders = DjangoFilterConnectionField(OrderType)
 
     # def resolve_allCustomers(self, info, filter=None, order_by=None, **kwargs):
     #     qs = Customer.objects.all()
