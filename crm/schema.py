@@ -11,9 +11,9 @@ from .filters import CustomerFilter, ProductFilter, OrderFilter
 class CustomerType(DjangoObjectType):
     class Meta:
         model = Customer
-        fields = ("id", "name", "email", "phone", "created_at")
         interfaces = (graphene.relay.Node,)
-        # filterset_class = CustomerFilter
+        filterset_class = CustomerFilter
+        fields = ['id', 'name', 'email', 'phone', 'created_at']
 
 # Define an InputObjectType for single customer creation
 class CustomerInput(graphene.InputObjectType):
@@ -199,7 +199,7 @@ class CreateOrder(graphene.Mutation):
         return CreateOrder(order=order, success=True, message="Order created successfully.")
 
 class Query(graphene.ObjectType):
-    allCustomers = DjangoFilterConnectionField(CustomerType, filterset_class=CustomerFilter)
+    all_customers = DjangoFilterConnectionField(CustomerType)
     all_products = DjangoFilterConnectionField(ProductType, order_by=graphene.List(of_type=graphene.String))
     all_orders = DjangoFilterConnectionField(OrderType, order_by=graphene.List(of_type=graphene.String))
 

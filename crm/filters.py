@@ -2,11 +2,11 @@ import django_filters
 from .models import Customer, Product, Order
 
 class CustomerFilter(django_filters.FilterSet):
-    name_icontains = django_filters.CharFilter(field_name="name", lookup_expr="icontains")
+    name = django_filters.CharFilter(field_name="name", lookup_expr="icontains")
     email = django_filters.DateTimeFilter(field_name="email", lookup_expr='icontains')
     created_at__gte = django_filters.DateTimeFilter(field_name="created_at", lookup_expr='gte')
     created_at__lte = django_filters.DateTimeFilter(field_name="created_at", lookup_expr='lte')
-    phone_pattern = django_filters.CharFilter(method='filter_phone_pattern')
+    phone = django_filters.CharFilter(method='filter_phone_pattern')
 
     class Meta:
         model = Customer
