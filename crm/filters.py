@@ -19,7 +19,7 @@ class CustomerFilter(django_filters.FilterSet):
         return queryset.filter(phone__startswith=value)
     
 class ProductFilter(django_filters.FilterSet):
-    name_icontains = django_filters.CharFilter(field_name="name", lookup_expr="icontains")
+    name = django_filters.CharFilter(field_name="name", lookup_expr="icontains")
     price__gte = django_filters.NumberFilter(field_name="price", lookup_expr='gte')
     price__lte = django_filters.NumberFilter(field_name="price", lookup_expr='lte')
     stock__gte = django_filters.NumberFilter(field_name="stock", lookup_expr='gte')
@@ -32,9 +32,11 @@ class ProductFilter(django_filters.FilterSet):
 
     def filter_stock_less_than_10(self, queryset, name, stock):
         """
-        Custom filter: returns stock < 10
+        Custom filter: returns stock < 10 if value is True
         """
-        return queryset.filter(stock__lt=10)
+        if value:
+            return queryset.filter(stock__lt=10)
+        return queryset
     
 class OrderFilter(django_filters.FilterSet):
     # Total amount range
