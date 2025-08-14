@@ -199,7 +199,7 @@ class CreateOrder(graphene.Mutation):
         return CreateOrder(order=order, success=True, message="Order created successfully.")
 
 class Query(graphene.ObjectType):
-    all_customers = DjangoFilterConnectionField(CustomerType)
+    all_customers = DjangoFilterConnectionField(CustomerType, filterset_class=CustomerFilter)
     all_products = DjangoFilterConnectionField(ProductType)
     all_orders = DjangoFilterConnectionField(OrderType)
 
