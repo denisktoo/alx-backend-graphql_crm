@@ -270,7 +270,11 @@ class Query(graphene.ObjectType):
             if filter.get("stockLte") is not None:
                 qs = qs.filter(stock__lte=filter["stockLte"])
         if order_by:
-            qs = qs.order_by(*order_by)
+            if isinstance(order_by, str):
+                qs = qs.order_by(order_by)  # no unpacking
+            else:
+                qs = qs.order_by(*order_by)
+
         return qs
 
     def resolve_all_orders(self, info, filter=None, order_by=None, **kwargs):
