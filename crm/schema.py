@@ -7,6 +7,7 @@ from datetime import datetime
 from decimal import Decimal
 from graphene_django.filter import DjangoFilterConnectionField
 from .filters import CustomerFilter, ProductFilter, OrderFilter
+from django.db.models import Sum
 
 class CustomerType(DjangoObjectType):
     class Meta:
