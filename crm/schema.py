@@ -138,16 +138,19 @@ class CreateProduct(graphene.Mutation):
 
 class OrderType(DjangoObjectType):
     total_amount = graphene.Float()
+    products = graphene.List(lambda: ProductType)  # override connection field
 
     class Meta:
         model = Order
         interfaces = (graphene.relay.Node,)
         filterset_class = OrderFilter
-        fields = ['id', 'customer', 'products', 'order_date', 'total_amount']
+        fields = ['id', 'customer', 'order_date', 'total_amount']  # remove 'products' from Meta
 
     def resolve_total_amount(self, info):
-        # Sum the price of all products in this order
         return sum(product.price for product in self.products.all())
+
+    def resolve_products(self, info):
+        return self.products.all()
     
 class OrderInput(graphene.InputObjectType):
     customer_id = graphene.ID(required=True)  # GraphQL will expose this as customerId
