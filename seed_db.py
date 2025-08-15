@@ -1,9 +1,9 @@
 import os
 import django
 from decimal import Decimal
-from datetime import datetime
+from django.utils import timezone
 
-# --- Set up Django environment ---
+# Set up Django environment
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "alx_backend_graphql_crm.settings")
 django.setup()
 
@@ -58,7 +58,7 @@ def seed():
     # Create order
     order, created = Order.objects.get_or_create(
         customer=alice,
-        order_date=datetime.now()
+        order_date=timezone.now()
     )
     order.products.set([laptop, tablet])
     print(f"Created order {order.id} for customer {alice.name} with products {[p.name for p in order.products.all()]}")
