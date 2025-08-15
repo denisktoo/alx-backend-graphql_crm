@@ -10,11 +10,16 @@ from .filters import CustomerFilter, ProductFilter, OrderFilter
 from django.db.models import Sum
 
 class CustomerType(DjangoObjectType):
+    numeric_id = graphene.Int()
+
     class Meta:
         model = Customer
         interfaces = (graphene.relay.Node,)
         filterset_class = CustomerFilter
-        fields = ['id', 'name', 'email', 'phone', 'created_at']
+        fields = ['name', 'email', 'phone', 'created_at']
+
+    def resolve_numeric_id(self, info):
+        return self.pk
 
 # Define an InputObjectType for single customer creation
 class CustomerInput(graphene.InputObjectType):
@@ -90,11 +95,16 @@ class BulkCreateCustomers(graphene.Mutation):
         return BulkCreateCustomers(customers=created_customers, errors=errors)
     
 class ProductType(DjangoObjectType):
+    numeric_id = graphene.Int()
+
     class Meta:
         model = Product
         interfaces = (graphene.relay.Node,)
         filterset_class = ProductFilter
-        fields = ['id', 'name', 'price', 'stock']
+        fields = ['name', 'price', 'stock']
+    
+    def resolve_numeric_id(self, info):
+        return self.pk
 
 class ProductInput(graphene.InputObjectType):
     name = graphene.String(required=True)
@@ -140,18 +150,22 @@ class CreateProduct(graphene.Mutation):
 class OrderType(DjangoObjectType):
     total_amount = graphene.Float()
     products = graphene.List(lambda: ProductType)  # override connection field
+    numeric_id = graphene.Int()
 
     class Meta:
         model = Order
         interfaces = (graphene.relay.Node,)
         filterset_class = OrderFilter
-        fields = ['id', 'customer', 'order_date', 'total_amount']  # remove 'products' from Meta
+        fields = ['customer', 'order_date', 'total_amount']  # remove 'products' from Meta
 
     def resolve_total_amount(self, info):
         return sum(product.price for product in self.products.all())
 
     def resolve_products(self, info):
         return self.products.all()
+    
+    def resolve_numeric_id(self, info):
+        return self.pk
     
 class OrderInput(graphene.InputObjectType):
     customer_id = graphene.ID(required=True)  # GraphQL will expose this as customerId
@@ -275,7 +289,7 @@ class Query(graphene.ObjectType):
                 qs = qs.filter(stock__lte=filter["stockLte"])
         if order_by:
             if isinstance(order_by, str):
-                qs = qs.order_by(order_by)  # no unpacking
+                qs = qs.order_by(order_by)
             else:
                 qs = qs.order_by(*order_by)
 
