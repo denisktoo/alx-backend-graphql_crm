@@ -118,11 +118,12 @@ It also includes a **database seeding script** using Django ORM (`get_or_create`
 
 ## ✅ Example Workflow
 
-1. Run migrations:
-
+1. Create and apply migrations:
    ```bash
+   python manage.py makemigrations crm
    python manage.py migrate
    ```
+
 2. Seed database:
 
    ```bash
