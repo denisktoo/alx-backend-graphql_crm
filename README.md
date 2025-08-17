@@ -1,6 +1,7 @@
 # 📘 GraphQL CRM with Django
 
 This project is a **GraphQL-based CRM API** built with **Django + Graphene**, implementing core GraphQL concepts such as queries, mutations, Relay Nodes, filters, and schema design.
+It also includes a **database seeding script** using Django ORM (`get_or_create`), allowing pre-population of Customers, Products, and Orders.
 
 ---
 
