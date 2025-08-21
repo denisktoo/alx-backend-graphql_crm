@@ -3,7 +3,7 @@ from django.core.validators import MinValueValidator
 from datetime import datetime
 
 class Customer(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=100)
     email = models.EmailField(max_length=255)
     phone = models.CharField(max_length=20, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now)
@@ -12,7 +12,7 @@ class Customer(models.Model):
         return f"{self.name} {self.email}"
     
 class Product(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)])
     stock = models.PositiveBigIntegerField(default=0, validators=[MinValueValidator(0)])
 
