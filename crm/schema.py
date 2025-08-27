@@ -244,7 +244,7 @@ class Query(graphene.ObjectType):
     all_customers = DjangoFilterConnectionField(
         CustomerType,
         filter=graphene.Argument(CustomerFilterInput),
-        order_by=graphene.List(graphene.String)  # e.g., ["-created_at", "name"]
+        order_by=graphene.List(graphene.String)
     )
     all_products = DjangoFilterConnectionField(
         ProductType,
