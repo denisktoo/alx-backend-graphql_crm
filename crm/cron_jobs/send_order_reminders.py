@@ -46,7 +46,8 @@ result = client.execute(query, variable_values=variables)
 
 # file path
 base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-file_path = os.path.join(base_dir, "tmp/order_reminders_log.txt")
+# file_path = os.path.join(base_dir, "tmp", "order_reminders_log.txt")
+file_path = f"{base_dir}/tmp/order_reminders_log.txt"
 
 with open(file_path, 'a') as file:
   for edge in result['allOrders']['edges']:
