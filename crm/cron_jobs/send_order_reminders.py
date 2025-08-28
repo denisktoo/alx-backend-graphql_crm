@@ -1,14 +1,10 @@
 import os
+from datetime import datetime, timedelta
 from gql import gql, Client
 from gql.transport.requests import RequestsHTTPTransport
-from datetime import datetime, timedelta
 
 # Define the transport
-transport = RequestsHTTPTransport(
-    url='http://localhost:8000/graphql',
-    verify=True,
-    retries=3,
-)
+transport = RequestsHTTPTransport(url='http://localhost:8000/graphql')
 
 seven_days_ago = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
 
@@ -16,13 +12,14 @@ seven_days_ago = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
 client = Client(transport=transport, fetch_schema_from_transport=True)
 
 # Define a query
-query = gql("""
+query = gql(
+   """
 query getRecentOrders($start: DateTime!) {
   allOrders(filter: { orderDateGte: $start }) {
     edges {
       node {
-        id
         numericId
+        id
         customer {
           name
           email
@@ -36,7 +33,8 @@ query getRecentOrders($start: DateTime!) {
     }
   }
 }
-""")
+"""
+)
 
 # Define variables
 variables = {
@@ -48,7 +46,7 @@ result = client.execute(query, variable_values=variables)
 
 # file path
 base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-file_path = os.path.join(base_dir, "tmp", "order_reminders_log.txt")
+file_path = os.path.join(base_dir, "tmp/order_reminders_log.txt")
 
 with open(file_path, 'a') as file:
   for edge in result['allOrders']['edges']:
