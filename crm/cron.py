@@ -9,4 +9,4 @@ def log_crm_heartbeat():
     timestamp = datetime.now().strftime("%d/%m/%Y-%H:%M:%S")
 
     with open(file_path, "a") as file:
-        file.write(f"{timestamp} CRM is alive'n")
+        file.write(f"{timestamp} CRM is alive\n")
