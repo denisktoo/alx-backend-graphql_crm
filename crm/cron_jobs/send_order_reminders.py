@@ -14,26 +14,26 @@ client = Client(transport=transport, fetch_schema_from_transport=True)
 # Define a query
 query = gql(
    """
-query getRecentOrders($start: DateTime!) {
-  allOrders(filter: { orderDateGte: $start }) {
-    edges {
-      node {
-        numericId
-        id
-        customer {
-          name
-          email
+  query getRecentOrders($start: DateTime!) {
+    allOrders(filter: { orderDateGte: $start }) {
+      edges {
+        node {
+          numericId
+          id
+          customer {
+            name
+            email
+          }
+          products {
+            name
+          }
+          totalAmount
+          orderDate
         }
-        products {
-          name
-        }
-        totalAmount
-        orderDate
       }
     }
   }
-}
-"""
+  """
 )
 
 # Define variables

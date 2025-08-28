@@ -147,6 +147,33 @@ class CreateProduct(graphene.Mutation):
         except ValidationError as e:
             return CreateProduct(product=None, success=False, message=f"Validation error: {e}")
 
+class UpdateProductStockInput(graphene.InputObjectType):
+    stock_increment = graphene.Int(default_value=10)
+
+class UpdateLowStockProducts(graphene.Mutation):
+    product_list = graphene.List(ProductType)
+    success = graphene.Boolean()
+    message = graphene.String()
+
+    class Arguments:
+        input = UpdateProductStockInput(required=False)
+
+    def mutate(self, info, input=None):
+        # fetch the product less than 10
+        products = Product.objects.filter(stock__lt=10)
+        increment = input.stock_increment if input else 10
+        updated_products = []
+        for product in products:
+            product.stock += increment
+            product.save()
+            updated_products.append(product)
+        
+        return UpdateLowStockProducts(
+            product_list = updated_products,
+            success = True,
+            message="Products added to the list."
+        )
+
 class OrderType(DjangoObjectType):
     total_amount = graphene.Float()
     products = graphene.List(lambda: ProductType)  # override connection field
@@ -325,3 +352,4 @@ class Mutation(graphene.ObjectType):
     bulk_create_customers = BulkCreateCustomers.Field()
     create_product = CreateProduct.Field()
     create_order = CreateOrder.Field()
+    update_low_stock_products = UpdateLowStockProducts.Field()

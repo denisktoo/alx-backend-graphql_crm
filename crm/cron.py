@@ -7,19 +7,20 @@ from gql.transport.requests import RequestsHTTPTransport
 base_dir = os.path.dirname(os.path.dirname(__file__))
 # file_path = os.path.join(base_dir, "tmp", "crm_heartbeat_log.txt")
 file_path = f"{base_dir}/tmp/crm_heartbeat_log.txt"
+file_path_1 = f"{base_dir}/tmp/low_stock_updates_log.txt"
+
+# Define the transport
+transport = RequestsHTTPTransport(url='http://localhost:8000/graphql')
+
+# Create the Client
+client = Client(transport=transport, fetch_schema_from_transport=True)
 
 def log_crm_heartbeat():
-    # Define the transport
-    transport = RequestsHTTPTransport(url='http://localhost:8000/graphql')
-
-    # Create the Client
-    client = Client(transport=transport, fetch_schema_from_transport=True)
-
     # Define a query
     query = gql(
     """
     query {
-      hello
+        hello
     }
     """
     )
@@ -36,5 +37,36 @@ def log_crm_heartbeat():
     with open(file_path, "a") as file:
         file.write(f"{timestamp} CRM is alive\n")
 
+def update_low_stock():
+    # Define a mutation
+    mutation = gql(
+    """
+    mutation {
+        updateLowStockProducts {
+            success
+            message
+            productList {
+                id
+                name
+                stock
+            }
+        }
+    }
+    """
+    )
+
+    # Execute query
+    result = client.execute(mutation)
+
+    # Get all products
+    products = result['updateLowStockProducts']['productList']
+
+    timestamp = datetime.now().strftime("%d/%m/%Y-%H:%M:%S")
+
+    with open(file_path_1, "a") as file:
+        for product in products:
+            file.write(f"{timestamp} - {product['name']}: {product['stock']}\n")
+
 if __name__ == '__main__':
     log_crm_heartbeat()
+    update_low_stock()
