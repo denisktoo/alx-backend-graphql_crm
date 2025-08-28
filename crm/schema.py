@@ -1,6 +1,6 @@
 import graphene
 from graphene_django import DjangoObjectType
-from .models import Customer, Product, Order
+from crm.models import Customer, Product, Order
 import re
 from django.core.exceptions import ValidationError
 from datetime import datetime
